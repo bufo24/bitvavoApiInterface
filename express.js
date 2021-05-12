@@ -7,7 +7,7 @@ const app = express();
 
 app.use(cors());
 
-const { API_KEY, API_SECRET } = require("./api");
+const { API_KEY, API_SECRET } = require("./keys");
 const {
   USE_SSL,
   PORT,
