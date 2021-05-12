@@ -7,7 +7,7 @@ yarn-error.log*
 lerna-debug.log*
 
 # Dev files
-api.js
+keys.js
 options.js
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
