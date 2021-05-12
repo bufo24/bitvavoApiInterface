@@ -8,7 +8,13 @@ const app = express();
 app.use(cors());
 
 const { API_KEY, API_SECRET } = require("./api");
-const { USE_SSL, PORT } = require("./options");
+const {
+  USE_SSL,
+  PORT,
+  DOMAIN_PRIVATE_KEY,
+  DOMAIN_CERTIFICATE,
+  DOMAIN_CHAIN,
+} = require("./options");
 
 const port = PORT;
 
@@ -82,18 +88,9 @@ app.get("/priceHistory", async (req, res) => {
 });
 
 if (USE_SSL) {
-  const privateKey = fs.readFileSync(
-    "/etc/letsencrypt/live/bitvavo.jjdev.nl/privkey.pem",
-    "utf8"
-  );
-  const certificate = fs.readFileSync(
-    "/etc/letsencrypt/live/bitvavo.jjdev.nl/cert.pem",
-    "utf8"
-  );
-  const ca = fs.readFileSync(
-    "/etc/letsencrypt/live/bitvavo.jjdev.nl/chain.pem",
-    "utf8"
-  );
+  const privateKey = DOMAIN_PRIVATE_KEY;
+  const certificate = DOMAIN_CERTIFICATE;
+  const ca = DOMAIN_CHAIN;
   const credentials = {
     key: privateKey,
     cert: certificate,
