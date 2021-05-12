@@ -7,7 +7,7 @@ yarn-error.log*
 lerna-debug.log*
 
 # API key
-keys.js
+api.js
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
