@@ -97,9 +97,9 @@ app.get("/priceHistory", async (req, res) => {
 });
 
 if (USE_SSL) {
-  const privateKey = DOMAIN_PRIVATE_KEY;
-  const certificate = DOMAIN_CERTIFICATE;
-  const ca = DOMAIN_CHAIN;
+  const privateKey = fs.readFileSync(DOMAIN_PRIVATE_KEY, "utf8");
+  const certificate = fs.readFileSync(DOMAIN_CERTIFICATE, "utf8");
+  const ca = fs.readFileSync(DOMAIN_CHAIN, "utf8");
   const credentials = {
     key: privateKey,
     cert: certificate,
