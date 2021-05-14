@@ -56,10 +56,8 @@ app.get("/tradeStats", async (req, res) => {
   }
   try {
     let response = await bitvavo.balance({ symbol: "BTC" });
-    for (let entry of response) {
-      output.staking += +response[0].available - output.btc;
-      output.btc += output.staking;
-    }
+    output.staking += +response[0].available - output.btc;
+    output.btc += output.staking;
   } catch (error) {
     console.log(error);
   }
