@@ -4,8 +4,10 @@ const https = require("https");
 const express = require("express");
 const cors = require("cors");
 const app = express();
-
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
 app.use(cors());
+const bitvavo = require("bitvavo");
 
 const { API_KEY, API_SECRET } = require("./keys");
 const {
@@ -18,32 +20,43 @@ const {
 
 const port = PORT;
 
-const bitvavo = require("bitvavo")().options({
-  APIKEY: API_KEY,
-  APISECRET: API_SECRET,
-  ACCESSWINDOW: 10000,
-  RESTURL: "https://api.bitvavo.com/v2",
-  WSURL: "wss://ws.bitvavo.com/v2/",
-  DEBUGGING: false,
-});
-
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/currentPrice", async (req, res) => {
+app.post("/currentPrice", async (req, res) => {
+  const API_KEY = req.body.apiKey;
+  const API_SECRET = req.body.apiSecret;
+  let b = bitvavo().options({
+    APIKEY: API_KEY,
+    APISECRET: API_SECRET,
+    ACCESSWINDOW: 10000,
+    RESTURL: "https://api.bitvavo.com/v2",
+    WSURL: "wss://ws.bitvavo.com/v2/",
+    DEBUGGING: false,
+  });
   try {
-    let response = await bitvavo.tickerPrice({ market: "BTC-EUR" });
+    let response = await b.tickerPrice({ market: "BTC-EUR" });
     res.json(response.price);
   } catch (error) {
     res.json(error);
   }
 });
 
-app.get("/tradeStats", async (req, res) => {
+app.post("/tradeStats", async (req, res) => {
   let output = { btc: 0, costs: 0, investments: 0, staking: 0 };
+  const API_KEY = req.body.apiKey;
+  const API_SECRET = req.body.apiSecret;
+  let b = bitvavo().options({
+    APIKEY: API_KEY,
+    APISECRET: API_SECRET,
+    ACCESSWINDOW: 10000,
+    RESTURL: "https://api.bitvavo.com/v2",
+    WSURL: "wss://ws.bitvavo.com/v2/",
+    DEBUGGING: false,
+  });
   try {
-    let response = await bitvavo.trades("BTC-EUR", {
+    let response = await b.trades("BTC-EUR", {
       start: 1617573600000,
     });
     for (let entry of response) {
@@ -55,7 +68,7 @@ app.get("/tradeStats", async (req, res) => {
     console.log(error);
   }
   try {
-    let response = await bitvavo.balance({ symbol: "BTC" });
+    let response = await b.balance({ symbol: "BTC" });
     output.staking += +response[0].available - output.btc;
     output.btc += output.staking;
   } catch (error) {
@@ -64,10 +77,20 @@ app.get("/tradeStats", async (req, res) => {
   res.json(output);
 });
 
-app.get("/trades", async (req, res) => {
+app.post("/trades", async (req, res) => {
   let output = [];
+  const API_KEY = req.body.apiKey;
+  const API_SECRET = req.body.apiSecret;
+  let b = bitvavo().options({
+    APIKEY: API_KEY,
+    APISECRET: API_SECRET,
+    ACCESSWINDOW: 10000,
+    RESTURL: "https://api.bitvavo.com/v2",
+    WSURL: "wss://ws.bitvavo.com/v2/",
+    DEBUGGING: false,
+  });
   try {
-    let response = await bitvavo.trades("BTC-EUR", {
+    let response = await b.trades("BTC-EUR", {
       start: 1617573600000,
     });
     for (let entry of response) {
@@ -79,10 +102,20 @@ app.get("/trades", async (req, res) => {
   }
 });
 
-app.get("/priceHistory", async (req, res) => {
+app.post("/priceHistory", async (req, res) => {
   let output = [];
+  const API_KEY = req.body.apiKey;
+  const API_SECRET = req.body.apiSecret;
+  let b = bitvavo().options({
+    APIKEY: API_KEY,
+    APISECRET: API_SECRET,
+    ACCESSWINDOW: 10000,
+    RESTURL: "https://api.bitvavo.com/v2",
+    WSURL: "wss://ws.bitvavo.com/v2/",
+    DEBUGGING: false,
+  });
   try {
-    let response = await bitvavo.candles("BTC-EUR", "1d", {
+    let response = await b.candles("BTC-EUR", "1d", {
       start: 1617573600000,
     });
     for (let entry of response) {
