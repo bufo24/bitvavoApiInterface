@@ -44,7 +44,14 @@ app.post("/currentPrice", async (req, res) => {
 });
 
 app.post("/tradeStats", async (req, res) => {
-  let output = { btc: 0, costs: 0, investments: 0, staking: 0 };
+  let output = {
+    btc: 0,
+    costs: 0,
+    investments: 0,
+    staking: 0,
+    withdrawalCosts: 0,
+    withdrawed: 0,
+  };
   const API_KEY = req.body.apiKey;
   const API_SECRET = req.body.apiSecret;
   let b = bitvavo().options({
@@ -68,8 +75,21 @@ app.post("/tradeStats", async (req, res) => {
     console.log(error);
   }
   try {
+    let response = await b.withdrawalHistory({
+      start: 1617573600000,
+    });
+    for (let entry of response) {
+      if (entry.symbol === "BTC") {
+        output.btc -= +entry.fee;
+        output.withdrawed += +entry.amount;
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  try {
     let response = await b.balance({ symbol: "BTC" });
-    output.staking += +response[0].available - output.btc;
+    output.staking = output.withdrawed + +response[0].available - output.btc;
     output.btc += output.staking;
   } catch (error) {
     console.log(error);
