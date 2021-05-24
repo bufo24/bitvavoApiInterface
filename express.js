@@ -54,6 +54,7 @@ app.post("/tradeStats", async (req, res) => {
   };
   const API_KEY = req.body.apiKey;
   const API_SECRET = req.body.apiSecret;
+  const start = req.body.start;
   let b = bitvavo().options({
     APIKEY: API_KEY,
     APISECRET: API_SECRET,
@@ -64,19 +65,25 @@ app.post("/tradeStats", async (req, res) => {
   });
   try {
     let response = await b.trades("BTC-EUR", {
-      start: 1617573600000,
+      start: start,
     });
     for (let entry of response) {
-      output.btc += +entry.amount;
-      output.costs += +entry.amount * +entry.price + +entry.fee;
-      output.investments++;
+      if (entry.side == "buy") {
+        output.btc += +entry.amount;
+        output.costs += +entry.amount * +entry.price + +entry.fee;
+        output.investments++;
+      } else if (entry.side == "sell") {
+        output.btc -= +entry.amount;
+        output.costs -= +entry.amount * +entry.price + +entry.fee;
+        output.investments--;
+      }
     }
   } catch (error) {
     console.log(error);
   }
   try {
     let response = await b.withdrawalHistory({
-      start: 1617573600000,
+      start: start,
     });
     for (let entry of response) {
       if (entry.symbol === "BTC") {
@@ -101,6 +108,7 @@ app.post("/trades", async (req, res) => {
   let output = [];
   const API_KEY = req.body.apiKey;
   const API_SECRET = req.body.apiSecret;
+  const start = req.body.start;
   let b = bitvavo().options({
     APIKEY: API_KEY,
     APISECRET: API_SECRET,
@@ -111,7 +119,7 @@ app.post("/trades", async (req, res) => {
   });
   try {
     let response = await b.trades("BTC-EUR", {
-      start: 1617573600000,
+      start: start,
     });
     for (let entry of response) {
       output.push(entry);
@@ -126,6 +134,7 @@ app.post("/priceHistory", async (req, res) => {
   let output = [];
   const API_KEY = req.body.apiKey;
   const API_SECRET = req.body.apiSecret;
+  const start = req.body.start;
   let b = bitvavo().options({
     APIKEY: API_KEY,
     APISECRET: API_SECRET,
@@ -136,7 +145,7 @@ app.post("/priceHistory", async (req, res) => {
   });
   try {
     let response = await b.candles("BTC-EUR", "1d", {
-      start: 1617573600000,
+      start: start,
     });
     for (let entry of response) {
       output.push({ price: entry[4], timestamp: entry[0] });
