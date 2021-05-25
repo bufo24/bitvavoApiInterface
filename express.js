@@ -9,7 +9,6 @@ app.use(bodyParser.json());
 app.use(cors());
 const bitvavo = require("bitvavo");
 
-const { API_KEY, API_SECRET } = require("./keys");
 const {
   USE_SSL,
   PORT,
