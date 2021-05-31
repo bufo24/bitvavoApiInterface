@@ -26,6 +26,7 @@ app.get("/", (req, res) => {
 app.post("/currentPrice", async (req, res) => {
   const API_KEY = req.body.apiKey;
   const API_SECRET = req.body.apiSecret;
+  const coin = req.body.coin;
   let b = bitvavo().options({
     APIKEY: API_KEY,
     APISECRET: API_SECRET,
@@ -35,7 +36,7 @@ app.post("/currentPrice", async (req, res) => {
     DEBUGGING: false,
   });
   try {
-    let response = await b.tickerPrice({ market: "BTC-EUR" });
+    let response = await b.tickerPrice({ market: coin + "-EUR" });
     res.json(response.price);
   } catch (error) {
     res.json(error);
@@ -54,6 +55,7 @@ app.post("/tradeStats", async (req, res) => {
   const API_KEY = req.body.apiKey;
   const API_SECRET = req.body.apiSecret;
   const start = req.body.start;
+  const coin = req.body.coin;
   let b = bitvavo().options({
     APIKEY: API_KEY,
     APISECRET: API_SECRET,
@@ -63,7 +65,7 @@ app.post("/tradeStats", async (req, res) => {
     DEBUGGING: false,
   });
   try {
-    let response = await b.trades("BTC-EUR", {
+    let response = await b.trades(coin + "-EUR", {
       start: start,
     });
     for (let entry of response) {
@@ -94,7 +96,7 @@ app.post("/tradeStats", async (req, res) => {
     console.log(error);
   }
   try {
-    let response = await b.balance({ symbol: "BTC" });
+    let response = await b.balance({ symbol: coin });
     output.staking = output.withdrawed + +response[0].available - output.btc;
     output.btc += output.staking;
   } catch (error) {
@@ -108,6 +110,7 @@ app.post("/trades", async (req, res) => {
   const API_KEY = req.body.apiKey;
   const API_SECRET = req.body.apiSecret;
   const start = req.body.start;
+  const coin = req.body.coin;
   let b = bitvavo().options({
     APIKEY: API_KEY,
     APISECRET: API_SECRET,
@@ -117,7 +120,7 @@ app.post("/trades", async (req, res) => {
     DEBUGGING: false,
   });
   try {
-    let response = await b.trades("BTC-EUR", {
+    let response = await b.trades(coin + "-EUR", {
       start: start,
     });
     for (let entry of response) {
@@ -134,6 +137,7 @@ app.post("/priceHistory", async (req, res) => {
   const API_KEY = req.body.apiKey;
   const API_SECRET = req.body.apiSecret;
   const start = req.body.start;
+  const coin = req.body.coin;
   let b = bitvavo().options({
     APIKEY: API_KEY,
     APISECRET: API_SECRET,
@@ -143,7 +147,7 @@ app.post("/priceHistory", async (req, res) => {
     DEBUGGING: false,
   });
   try {
-    let response = await b.candles("BTC-EUR", "1d", {
+    let response = await b.candles(coin + "-EUR", "1d", {
       start: start,
     });
     for (let entry of response) {
