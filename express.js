@@ -87,7 +87,7 @@ app.post("/tradeStats", async (req, res) => {
       start: start,
     });
     for (let entry of response) {
-      if (entry.symbol === "BTC") {
+      if (entry.symbol === coin) {
         output.btc -= +entry.fee;
         output.withdrawed += +entry.amount;
       }
